@@ -11809,25 +11809,60 @@ class GridyTable extends HTMLElement {
 
         for (let field of this.dataSource.fields) {
             let cell = this.renderer.createEl('td');
-            let value = '';
-            if (typeof field == 'string') {
-                value = dataItem[field];
-            } else {
-                value = jsonPath(dataItem, field.path);
-                if (field.fmt && typeof field.fmt === 'function') {
-                    value = field.fmt.call(this, field, value);
-                }
-            }
-            if (value && ! field.html) {
-                cell.textContent = value;
-            }
-            if (value && field.html) {
-                cell.innerHTML = value;
-            }
+
+            let value = this.specCellContents(field, dataItem, cell);
+            this.specCellAtts(field, cell, value);
+            this.specRowAttrs(field, row, value);
+
             row.appendChild(cell);
         }
         bodyEl.appendChild(row);
         this.dispatchEvent(new CustomEvent('bodyRowRendered'));
+    }
+
+    specCellContents(field, dataItem, cell) {
+        let value = '';
+        if (typeof field == 'string') {
+            value = dataItem[field];
+        } else {
+            value = jsonPath(dataItem, field.path);
+            if (field.fmt && typeof field.fmt === 'function') {
+                value = field.fmt.call(this, field, value);
+            }
+        }
+        if (value && !field.html) {
+            cell.textContent = value;
+        }
+        if (value && field.html) {
+            cell.innerHTML = value;
+        }
+        return value;
+    }
+
+    specCellAtts(field, cell, value) {
+        if (field.attr) {
+            for (let attrName of Object.keys(field.attr)) {
+                let attrValue = field.attr[attrName];
+                if (typeof attrValue == 'string') {
+                    cell.setAttribute(attrName, attrValue);
+                } else if (typeof attrValue == 'function') {
+                    cell.setAttribute(attrName, attrValue.call(this, field, value));
+                }
+            }
+        }
+    }
+
+    specRowAttrs(field, row, value) {
+        if (field.rowattr) {
+            for (let attrName of Object.keys(field.rowattr)) {
+                let attrValue = field.rowattr[attrName];
+                if (typeof attrValue == 'string') {
+                    row.setAttribute(attrName, attrValue);
+                } else if (typeof attrValue == 'function') {
+                    row.setAttribute(attrName, attrValue.call(this, field, value));
+                }
+            }
+        }
     }
 
     renderBody(data, backPaged) {

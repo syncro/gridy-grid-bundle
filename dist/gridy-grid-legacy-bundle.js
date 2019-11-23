@@ -11909,21 +11909,11 @@ var GridyTable = function (_HTMLElement) {
                     var field = _step3.value;
 
                     var cell = this.renderer.createEl('td');
-                    var value = '';
-                    if (typeof field == 'string') {
-                        value = dataItem[field];
-                    } else {
-                        value = jsonPath(dataItem, field.path);
-                        if (field.fmt && typeof field.fmt === 'function') {
-                            value = field.fmt.call(this, field, value);
-                        }
-                    }
-                    if (value && !field.html) {
-                        cell.textContent = value;
-                    }
-                    if (value && field.html) {
-                        cell.innerHTML = value;
-                    }
+
+                    var value = this.specCellContents(field, dataItem, cell);
+                    this.specCellAtts(field, cell, value);
+                    this.specRowAttrs(field, row, value);
+
                     row.appendChild(cell);
                 }
             } catch (err) {
@@ -11943,6 +11933,96 @@ var GridyTable = function (_HTMLElement) {
 
             bodyEl.appendChild(row);
             this.dispatchEvent(new CustomEvent('bodyRowRendered'));
+        }
+    }, {
+        key: 'specCellContents',
+        value: function specCellContents(field, dataItem, cell) {
+            var value = '';
+            if (typeof field == 'string') {
+                value = dataItem[field];
+            } else {
+                value = jsonPath(dataItem, field.path);
+                if (field.fmt && typeof field.fmt === 'function') {
+                    value = field.fmt.call(this, field, value);
+                }
+            }
+            if (value && !field.html) {
+                cell.textContent = value;
+            }
+            if (value && field.html) {
+                cell.innerHTML = value;
+            }
+            return value;
+        }
+    }, {
+        key: 'specCellAtts',
+        value: function specCellAtts(field, cell, value) {
+            if (field.attr) {
+                var _iteratorNormalCompletion4 = true;
+                var _didIteratorError4 = false;
+                var _iteratorError4 = undefined;
+
+                try {
+                    for (var _iterator4 = Object.keys(field.attr)[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+                        var attrName = _step4.value;
+
+                        var attrValue = field.attr[attrName];
+                        if (typeof attrValue == 'string') {
+                            cell.setAttribute(attrName, attrValue);
+                        } else if (typeof attrValue == 'function') {
+                            cell.setAttribute(attrName, attrValue.call(this, field, value));
+                        }
+                    }
+                } catch (err) {
+                    _didIteratorError4 = true;
+                    _iteratorError4 = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion4 && _iterator4.return) {
+                            _iterator4.return();
+                        }
+                    } finally {
+                        if (_didIteratorError4) {
+                            throw _iteratorError4;
+                        }
+                    }
+                }
+            }
+        }
+    }, {
+        key: 'specRowAttrs',
+        value: function specRowAttrs(field, row, value) {
+            if (field.rowattr) {
+                var _iteratorNormalCompletion5 = true;
+                var _didIteratorError5 = false;
+                var _iteratorError5 = undefined;
+
+                try {
+                    for (var _iterator5 = Object.keys(field.rowattr)[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+                        var attrName = _step5.value;
+
+                        var attrValue = field.rowattr[attrName];
+                        if (typeof attrValue == 'string') {
+                            row.setAttribute(attrName, attrValue);
+                        } else if (typeof attrValue == 'function') {
+                            row.setAttribute(attrName, attrValue.call(this, field, value));
+                        }
+                    }
+                } catch (err) {
+                    _didIteratorError5 = true;
+                    _iteratorError5 = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion5 && _iterator5.return) {
+                            _iterator5.return();
+                        }
+                    } finally {
+                        if (_didIteratorError5) {
+                            throw _iteratorError5;
+                        }
+                    }
+                }
+            }
         }
     }, {
         key: 'renderBody',
@@ -11974,53 +12054,53 @@ var GridyTable = function (_HTMLElement) {
                         }
                     }
                 } else {
-                    var _iteratorNormalCompletion4 = true;
-                    var _didIteratorError4 = false;
-                    var _iteratorError4 = undefined;
+                    var _iteratorNormalCompletion6 = true;
+                    var _didIteratorError6 = false;
+                    var _iteratorError6 = undefined;
 
                     try {
-                        for (var _iterator4 = data[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-                            var dataItem = _step4.value;
+                        for (var _iterator6 = data[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+                            var dataItem = _step6.value;
 
                             this.renderRow(tbody, dataItem);
                         }
                     } catch (err) {
-                        _didIteratorError4 = true;
-                        _iteratorError4 = err;
+                        _didIteratorError6 = true;
+                        _iteratorError6 = err;
                     } finally {
                         try {
-                            if (!_iteratorNormalCompletion4 && _iterator4.return) {
-                                _iterator4.return();
+                            if (!_iteratorNormalCompletion6 && _iterator6.return) {
+                                _iterator6.return();
                             }
                         } finally {
-                            if (_didIteratorError4) {
-                                throw _iteratorError4;
+                            if (_didIteratorError6) {
+                                throw _iteratorError6;
                             }
                         }
                     }
                 }
             } else {
-                var _iteratorNormalCompletion5 = true;
-                var _didIteratorError5 = false;
-                var _iteratorError5 = undefined;
+                var _iteratorNormalCompletion7 = true;
+                var _didIteratorError7 = false;
+                var _iteratorError7 = undefined;
 
                 try {
-                    for (var _iterator5 = data[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
-                        var _dataItem = _step5.value;
+                    for (var _iterator7 = data[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
+                        var _dataItem = _step7.value;
 
                         this.renderRow(tbody, _dataItem);
                     }
                 } catch (err) {
-                    _didIteratorError5 = true;
-                    _iteratorError5 = err;
+                    _didIteratorError7 = true;
+                    _iteratorError7 = err;
                 } finally {
                     try {
-                        if (!_iteratorNormalCompletion5 && _iterator5.return) {
-                            _iterator5.return();
+                        if (!_iteratorNormalCompletion7 && _iterator7.return) {
+                            _iterator7.return();
                         }
                     } finally {
-                        if (_didIteratorError5) {
-                            throw _iteratorError5;
+                        if (_didIteratorError7) {
+                            throw _iteratorError7;
                         }
                     }
                 }
@@ -12107,27 +12187,27 @@ var GridyTable = function (_HTMLElement) {
                 this.filter.addEventListener('filterChanged', this.changeFilter.bind(this));
             }
             if (this.filters) {
-                var _iteratorNormalCompletion6 = true;
-                var _didIteratorError6 = false;
-                var _iteratorError6 = undefined;
+                var _iteratorNormalCompletion8 = true;
+                var _didIteratorError8 = false;
+                var _iteratorError8 = undefined;
 
                 try {
-                    for (var _iterator6 = this.filters[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
-                        var filter = _step6.value;
+                    for (var _iterator8 = this.filters[Symbol.iterator](), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
+                        var filter = _step8.value;
 
                         filter.addEventListener('filterChanged', this.changeFilter.bind(this));
                     }
                 } catch (err) {
-                    _didIteratorError6 = true;
-                    _iteratorError6 = err;
+                    _didIteratorError8 = true;
+                    _iteratorError8 = err;
                 } finally {
                     try {
-                        if (!_iteratorNormalCompletion6 && _iterator6.return) {
-                            _iterator6.return();
+                        if (!_iteratorNormalCompletion8 && _iterator8.return) {
+                            _iterator8.return();
                         }
                     } finally {
-                        if (_didIteratorError6) {
-                            throw _iteratorError6;
+                        if (_didIteratorError8) {
+                            throw _iteratorError8;
                         }
                     }
                 }
